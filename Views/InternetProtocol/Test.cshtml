@@ -1,0 +1,1743 @@
+﻿@using Microsoft.AspNetCore.Html
+<title>Тест</title>
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-direction: row;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            width: 1100px;
+            overflow-y: auto;
+        }
+
+        .main-logo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            max-width: 160px;
+            max-height: 182.19px;
+        }
+
+        .heading-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .main-heading {
+            font-weight: bold;
+            font-size: 60px;
+            color: black;
+        }
+
+        .ip-heading {
+            font-weight: bold;
+            font-size: 60px;
+            color: #ff6600;
+        }
+
+        .subnet-heading {
+            display: flex;
+            flex-direction: row;
+            font-weight: bold;
+            font-size: 25px;
+            color: black;
+        }
+
+        .subnet-subHeading {
+            margin-right: 10px;
+            margin-left: 10px;
+            font-weight: bold;
+            font-size: 30px;
+            color: #ff6600;
+        }
+
+        .mini-div-box {
+            height: 40px;
+            width: 75px;
+            border: 1px solid #999;
+            font-size: 25px;
+            border-radius: 5px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .info-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            margin: 20px;
+        }
+
+        .info-container-student {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            margin: 20px;
+            margin-bottom: 200px;
+        }
+
+        .main-info-text-container {
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .info-text-container {
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-bottom: 5px;
+        }
+
+        .info-subContainer {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            margin-right: 20px;
+            margin-left: 20px;
+            background-color: #ffffff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .ip-digit-box {
+            height: 38px;
+            width: 23px;
+            margin: 2px;
+            font-size: 25px;
+            text-align: center;
+            border: 1px solid #999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .ip-dot {
+            font-weight: bold;
+            font-size: 43px;
+        }
+
+        .ip-div-container {
+            display: flex;
+            flex-direction: row;
+        }
+    </style>
+    @functions {
+        string SplitIPDec(int octet, string ipDec)
+        {
+            List<string> ipOctets = ipDec.Split(".").ToList();
+            return ipOctets[octet];
+        }
+
+        IHtmlContent CheckMistakesBin(char rightAnswer, char yourAnswer)
+        {
+            string htmlString = string.Empty;
+            if (rightAnswer == yourAnswer)
+            {
+                htmlString = $"<span style = \"color: green;\" > {yourAnswer} </ span >";
+            }
+            else
+            {
+                htmlString = $"<span style = \"color: red;\" > {yourAnswer} </ span >";
+            }
+            return new HtmlString(htmlString);
+        }
+
+        IHtmlContent CheckMistakesDec(string rightAnswer, string yourAnswer)
+        {
+            string htmlString = string.Empty;
+            if (rightAnswer == yourAnswer)
+            {
+                htmlString = $"<span style = \"color: green;\" > {yourAnswer} </ span >";
+            }
+            else
+            {
+                htmlString = $"<span style = \"color: red;\" > {yourAnswer} </ span >";
+            }
+            return new HtmlString(htmlString);
+        }
+    }
+</head>
+<body>
+    <section class="container">
+        <div class="heading-container"><div class="main-heading">IP адресиране - Тест</div></div>
+        <div class="heading-container"><div class="ip-heading">@Model.IPDec</div></div>@* @Model.IPDec[0] front-end check if its true, bit by bit*@
+        <div class="heading-container"><div class="subnet-heading">разделено на <div class="subnet-subHeading">@Model.SubnetCount</div> подмрежи</div></div>
+        <div class="info-container-student">
+            <div class="info-subContainer">
+                <div class="info-text-container">
+                    <div>Имена: </div>
+                </div>
+                <div>@Model.Name</div>
+            </div>
+            <div class="info-subContainer">
+                <div class="info-text-container">
+                    <div>№: </div>
+                </div>
+                <div>@Model.Number</div>
+            </div>
+            <div class="info-subContainer">
+                <div class="info-text-container">
+                    <div>Клас: </div>
+                </div>
+                <div>@Model.SchoolClass</div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете IP адреса в двоична бройна система:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@Model.IPBin[0]</div>
+                    <div class="ip-digit-box">@Model.IPBin[1]</div>
+                    <div class="ip-digit-box">@Model.IPBin[2]</div>
+                    <div class="ip-digit-box">@Model.IPBin[3]</div>
+                    <div class="ip-digit-box">@Model.IPBin[4]</div>
+                    <div class="ip-digit-box">@Model.IPBin[5]</div>
+                    <div class="ip-digit-box">@Model.IPBin[6]</div>
+                    <div class="ip-digit-box">@Model.IPBin[7]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.IPBin[8]</div>
+                    <div class="ip-digit-box">@Model.IPBin[9]</div>
+                    <div class="ip-digit-box">@Model.IPBin[10]</div>
+                    <div class="ip-digit-box">@Model.IPBin[11]</div>
+                    <div class="ip-digit-box">@Model.IPBin[12]</div>
+                    <div class="ip-digit-box">@Model.IPBin[13]</div>
+                    <div class="ip-digit-box">@Model.IPBin[14]</div>
+                    <div class="ip-digit-box">@Model.IPBin[15]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.IPBin[16]</div>
+                    <div class="ip-digit-box">@Model.IPBin[17]</div>
+                    <div class="ip-digit-box">@Model.IPBin[18]</div>
+                    <div class="ip-digit-box">@Model.IPBin[19]</div>
+                    <div class="ip-digit-box">@Model.IPBin[20]</div>
+                    <div class="ip-digit-box">@Model.IPBin[21]</div>
+                    <div class="ip-digit-box">@Model.IPBin[22]</div>
+                    <div class="ip-digit-box">@Model.IPBin[23]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.IPBin[24]</div>
+                    <div class="ip-digit-box">@Model.IPBin[25]</div>
+                    <div class="ip-digit-box">@Model.IPBin[26]</div>
+                    <div class="ip-digit-box">@Model.IPBin[27]</div>
+                    <div class="ip-digit-box">@Model.IPBin[28]</div>
+                    <div class="ip-digit-box">@Model.IPBin[29]</div>
+                    <div class="ip-digit-box">@Model.IPBin[30]</div>
+                    <div class="ip-digit-box">@Model.IPBin[31]</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[0], Model.InputIPBin[0])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[1], Model.InputIPBin[1])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[2], Model.InputIPBin[2])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[3], Model.InputIPBin[3])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[4], Model.InputIPBin[4])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[5], Model.InputIPBin[5])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[6], Model.InputIPBin[6])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[7], Model.InputIPBin[7])</div>
+
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[8], Model.InputIPBin[8])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[9], Model.InputIPBin[9])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[10], Model.InputIPBin[10])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[11], Model.InputIPBin[11])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[12], Model.InputIPBin[12])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[13], Model.InputIPBin[13])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[14], Model.InputIPBin[14])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[15], Model.InputIPBin[15])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[16], Model.InputIPBin[16])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[17], Model.InputIPBin[17])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[18], Model.InputIPBin[18])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[19], Model.InputIPBin[19])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[20], Model.InputIPBin[20])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[21], Model.InputIPBin[21])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[22], Model.InputIPBin[22])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[23], Model.InputIPBin[23])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[24], Model.InputIPBin[24])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[25], Model.InputIPBin[25])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[26], Model.InputIPBin[26])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[27], Model.InputIPBin[27])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[28], Model.InputIPBin[28])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[29], Model.InputIPBin[29])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[30], Model.InputIPBin[30])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.IPBin[31], Model.InputIPBin[31])</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Определете от кой клас мрежа е IP адреса:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="mini-div-box">@Model.NetworkClass</div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="mini-div-box">@CheckMistakesBin(Model.NetworkClass, Model.InputNetworkClass)</div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете мрежовата маска в двоична бройна система:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@Model.SMBin[0]</div>
+                    <div class="ip-digit-box">@Model.SMBin[1]</div>
+                    <div class="ip-digit-box">@Model.SMBin[2]</div>
+                    <div class="ip-digit-box">@Model.SMBin[3]</div>
+                    <div class="ip-digit-box">@Model.SMBin[4]</div>
+                    <div class="ip-digit-box">@Model.SMBin[5]</div>
+                    <div class="ip-digit-box">@Model.SMBin[6]</div>
+                    <div class="ip-digit-box">@Model.SMBin[7]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SMBin[8]</div>
+                    <div class="ip-digit-box">@Model.SMBin[9]</div>
+                    <div class="ip-digit-box">@Model.SMBin[10]</div>
+                    <div class="ip-digit-box">@Model.SMBin[11]</div>
+                    <div class="ip-digit-box">@Model.SMBin[12]</div>
+                    <div class="ip-digit-box">@Model.SMBin[13]</div>
+                    <div class="ip-digit-box">@Model.SMBin[14]</div>
+                    <div class="ip-digit-box">@Model.SMBin[15]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SMBin[16]</div>
+                    <div class="ip-digit-box">@Model.SMBin[17]</div>
+                    <div class="ip-digit-box">@Model.SMBin[18]</div>
+                    <div class="ip-digit-box">@Model.SMBin[19]</div>
+                    <div class="ip-digit-box">@Model.SMBin[20]</div>
+                    <div class="ip-digit-box">@Model.SMBin[21]</div>
+                    <div class="ip-digit-box">@Model.SMBin[22]</div>
+                    <div class="ip-digit-box">@Model.SMBin[23]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SMBin[24]</div>
+                    <div class="ip-digit-box">@Model.SMBin[25]</div>
+                    <div class="ip-digit-box">@Model.SMBin[26]</div>
+                    <div class="ip-digit-box">@Model.SMBin[27]</div>
+                    <div class="ip-digit-box">@Model.SMBin[28]</div>
+                    <div class="ip-digit-box">@Model.SMBin[29]</div>
+                    <div class="ip-digit-box">@Model.SMBin[30]</div>
+                    <div class="ip-digit-box">@Model.SMBin[31]</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[0], Model.InputSMBin[0])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[1], Model.InputSMBin[1])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[2], Model.InputSMBin[2])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[3], Model.InputSMBin[3])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[4], Model.InputSMBin[4])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[5], Model.InputSMBin[5])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[6], Model.InputSMBin[6])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[7], Model.InputSMBin[7])</div>
+
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[8], Model.InputSMBin[8])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[9], Model.InputSMBin[9])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[10], Model.InputSMBin[10])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[11], Model.InputSMBin[11])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[12], Model.InputSMBin[12])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[13], Model.InputSMBin[13])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[14], Model.InputSMBin[14])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[15], Model.InputSMBin[15])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[16], Model.InputSMBin[16])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[17], Model.InputSMBin[17])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[18], Model.InputSMBin[18])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[19], Model.InputSMBin[19])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[20], Model.InputSMBin[20])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[21], Model.InputSMBin[21])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[22], Model.InputSMBin[22])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[23], Model.InputSMBin[23])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[24], Model.InputSMBin[24])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[25], Model.InputSMBin[25])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[26], Model.InputSMBin[26])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[27], Model.InputSMBin[27])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[28], Model.InputSMBin[28])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[29], Model.InputSMBin[29])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[30], Model.InputSMBin[30])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SMBin[31], Model.InputSMBin[31])</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете мрежовата маска в десетична бройна система</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@SplitIPDec(0, Model.SMDec)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(1, Model.SMDec)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(2, Model.SMDec)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(3, Model.SMDec)</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(0, Model.SMDec), SplitIPDec(0, Model.InputSMDec))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(1, Model.SMDec), SplitIPDec(1, Model.InputSMDec))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(2, Model.SMDec), SplitIPDec(2, Model.InputSMDec))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(3, Model.SMDec), SplitIPDec(3, Model.InputSMDec))</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете мрежовия адрес в двоична бройна система:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@Model.NABin[0]</div>
+                    <div class="ip-digit-box">@Model.NABin[1]</div>
+                    <div class="ip-digit-box">@Model.NABin[2]</div>
+                    <div class="ip-digit-box">@Model.NABin[3]</div>
+                    <div class="ip-digit-box">@Model.NABin[4]</div>
+                    <div class="ip-digit-box">@Model.NABin[5]</div>
+                    <div class="ip-digit-box">@Model.NABin[6]</div>
+                    <div class="ip-digit-box">@Model.NABin[7]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.NABin[8]</div>
+                    <div class="ip-digit-box">@Model.NABin[9]</div>
+                    <div class="ip-digit-box">@Model.NABin[10]</div>
+                    <div class="ip-digit-box">@Model.NABin[11]</div>
+                    <div class="ip-digit-box">@Model.NABin[12]</div>
+                    <div class="ip-digit-box">@Model.NABin[13]</div>
+                    <div class="ip-digit-box">@Model.NABin[14]</div>
+                    <div class="ip-digit-box">@Model.NABin[15]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.NABin[16]</div>
+                    <div class="ip-digit-box">@Model.NABin[17]</div>
+                    <div class="ip-digit-box">@Model.NABin[18]</div>
+                    <div class="ip-digit-box">@Model.NABin[19]</div>
+                    <div class="ip-digit-box">@Model.NABin[20]</div>
+                    <div class="ip-digit-box">@Model.NABin[21]</div>
+                    <div class="ip-digit-box">@Model.NABin[22]</div>
+                    <div class="ip-digit-box">@Model.NABin[23]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.NABin[24]</div>
+                    <div class="ip-digit-box">@Model.NABin[25]</div>
+                    <div class="ip-digit-box">@Model.NABin[26]</div>
+                    <div class="ip-digit-box">@Model.NABin[27]</div>
+                    <div class="ip-digit-box">@Model.NABin[28]</div>
+                    <div class="ip-digit-box">@Model.NABin[29]</div>
+                    <div class="ip-digit-box">@Model.NABin[30]</div>
+                    <div class="ip-digit-box">@Model.NABin[31]</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[0], Model.InputNABin[0])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[1], Model.InputNABin[1])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[2], Model.InputNABin[2])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[3], Model.InputNABin[3])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[4], Model.InputNABin[4])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[5], Model.InputNABin[5])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[6], Model.InputNABin[6])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[7], Model.InputNABin[7])</div>
+
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[8], Model.InputNABin[8])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[9], Model.InputNABin[9])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[10], Model.InputNABin[10])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[11], Model.InputNABin[11])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[12], Model.InputNABin[12])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[13], Model.InputNABin[13])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[14], Model.InputNABin[14])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[15], Model.InputNABin[15])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[16], Model.InputNABin[16])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[17], Model.InputNABin[17])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[18], Model.InputNABin[18])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[19], Model.InputNABin[19])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[20], Model.InputNABin[20])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[21], Model.InputNABin[21])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[22], Model.InputNABin[22])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[23], Model.InputNABin[23])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[24], Model.InputNABin[24])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[25], Model.InputNABin[25])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[26], Model.InputNABin[26])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[27], Model.InputNABin[27])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[28], Model.InputNABin[28])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[29], Model.InputNABin[29])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[30], Model.InputNABin[30])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.NABin[31], Model.InputNABin[31])</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете мрежовия адрес в десетична бройна система:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@SplitIPDec(0, Model.NADec)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(1, Model.NADec)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(2, Model.NADec)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(3, Model.NADec)</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(0, Model.NADec), SplitIPDec(0, Model.InputNADec))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(1, Model.NADec), SplitIPDec(1, Model.InputNADec))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(2, Model.NADec), SplitIPDec(2, Model.InputNADec))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(3, Model.NADec), SplitIPDec(3, Model.InputNADec))</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете broadcast адреса в двоична бройна система:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@Model.BRABin[0]</div>
+                    <div class="ip-digit-box">@Model.BRABin[1]</div>
+                    <div class="ip-digit-box">@Model.BRABin[2]</div>
+                    <div class="ip-digit-box">@Model.BRABin[3]</div>
+                    <div class="ip-digit-box">@Model.BRABin[4]</div>
+                    <div class="ip-digit-box">@Model.BRABin[5]</div>
+                    <div class="ip-digit-box">@Model.BRABin[6]</div>
+                    <div class="ip-digit-box">@Model.BRABin[7]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.BRABin[8]</div>
+                    <div class="ip-digit-box">@Model.BRABin[9]</div>
+                    <div class="ip-digit-box">@Model.BRABin[10]</div>
+                    <div class="ip-digit-box">@Model.BRABin[11]</div>
+                    <div class="ip-digit-box">@Model.BRABin[12]</div>
+                    <div class="ip-digit-box">@Model.BRABin[13]</div>
+                    <div class="ip-digit-box">@Model.BRABin[14]</div>
+                    <div class="ip-digit-box">@Model.BRABin[15]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.BRABin[16]</div>
+                    <div class="ip-digit-box">@Model.BRABin[17]</div>
+                    <div class="ip-digit-box">@Model.BRABin[18]</div>
+                    <div class="ip-digit-box">@Model.BRABin[19]</div>
+                    <div class="ip-digit-box">@Model.BRABin[20]</div>
+                    <div class="ip-digit-box">@Model.BRABin[21]</div>
+                    <div class="ip-digit-box">@Model.BRABin[22]</div>
+                    <div class="ip-digit-box">@Model.BRABin[23]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.BRABin[24]</div>
+                    <div class="ip-digit-box">@Model.BRABin[25]</div>
+                    <div class="ip-digit-box">@Model.BRABin[26]</div>
+                    <div class="ip-digit-box">@Model.BRABin[27]</div>
+                    <div class="ip-digit-box">@Model.BRABin[28]</div>
+                    <div class="ip-digit-box">@Model.BRABin[29]</div>
+                    <div class="ip-digit-box">@Model.BRABin[30]</div>
+                    <div class="ip-digit-box">@Model.BRABin[31]</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[0], Model.InputBRABin[0])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[1], Model.InputBRABin[1])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[2], Model.InputBRABin[2])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[3], Model.InputBRABin[3])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[4], Model.InputBRABin[4])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[5], Model.InputBRABin[5])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[6], Model.InputBRABin[6])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[7], Model.InputBRABin[7])</div>
+
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[8], Model.InputBRABin[8])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[9], Model.InputBRABin[9])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[10], Model.InputBRABin[10])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[11], Model.InputBRABin[11])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[12], Model.InputBRABin[12])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[13], Model.InputBRABin[13])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[14], Model.InputBRABin[14])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[15], Model.InputBRABin[15])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[16], Model.InputBRABin[16])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[17], Model.InputBRABin[17])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[18], Model.InputBRABin[18])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[19], Model.InputBRABin[19])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[20], Model.InputBRABin[20])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[21], Model.InputBRABin[21])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[22], Model.InputBRABin[22])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[23], Model.InputBRABin[23])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[24], Model.InputBRABin[24])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[25], Model.InputBRABin[25])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[26], Model.InputBRABin[26])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[27], Model.InputBRABin[27])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[28], Model.InputBRABin[28])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[29], Model.InputBRABin[29])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[30], Model.InputBRABin[30])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.BRABin[31], Model.InputBRABin[31])</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете broadcast адреса в десетична бройна система:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@SplitIPDec(0, Model.BRADec)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(1, Model.BRADec)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(2, Model.BRADec)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(3, Model.BRADec)</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(0, Model.BRADec), SplitIPDec(0, Model.InputBRADec))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(1, Model.BRADec), SplitIPDec(1, Model.InputBRADec))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(2, Model.BRADec), SplitIPDec(2, Model.InputBRADec))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(3, Model.BRADec), SplitIPDec(3, Model.InputBRADec))</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете обхвата на мрежата: </div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>от </div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@SplitIPDec(0, Model.Range)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(1, Model.Range)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(2, Model.Range)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(3, Model.Range)</div>
+                </div>
+                <div class="info-text-container">
+                    <div>до </div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@SplitIPDec(4, Model.Range)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(5, Model.Range)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(6, Model.Range)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(7, Model.Range)</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>от </div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(0, Model.Range), SplitIPDec(0, Model.InputRange))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(1, Model.Range), SplitIPDec(1, Model.InputRange))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(2, Model.Range), SplitIPDec(2, Model.InputRange))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(3, Model.Range), SplitIPDec(3, Model.InputRange))</div>
+                </div>
+                <div class="info-text-container">
+                    <div>до </div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(4, Model.Range), SplitIPDec(4, Model.InputRange))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(5, Model.Range), SplitIPDec(5, Model.InputRange))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(6, Model.Range), SplitIPDec(6, Model.InputRange))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(7, Model.Range), SplitIPDec(7, Model.InputRange))</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете подмрежовата маска в двоична бройна система:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@Model.SubnetSMBin[0]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[1]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[2]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[3]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[4]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[5]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[6]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[7]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[8]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[9]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[10]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[11]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[12]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[13]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[14]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[15]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[16]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[17]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[18]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[19]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[20]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[21]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[22]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[23]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[24]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[25]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[26]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[27]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[28]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[29]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[30]</div>
+                    <div class="ip-digit-box">@Model.SubnetSMBin[31]</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[0], Model.InputSubnetSMBin[0])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[1], Model.InputSubnetSMBin[1])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[2], Model.InputSubnetSMBin[2])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[3], Model.InputSubnetSMBin[3])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[4], Model.InputSubnetSMBin[4])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[5], Model.InputSubnetSMBin[5])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[6], Model.InputSubnetSMBin[6])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[7], Model.InputSubnetSMBin[7])</div>
+
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[8], Model.InputSubnetSMBin[8])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[9], Model.InputSubnetSMBin[9])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[10], Model.InputSubnetSMBin[10])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[11], Model.InputSubnetSMBin[11])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[12], Model.InputSubnetSMBin[12])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[13], Model.InputSubnetSMBin[13])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[14], Model.InputSubnetSMBin[14])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[15], Model.InputSubnetSMBin[15])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[16], Model.InputSubnetSMBin[16])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[17], Model.InputSubnetSMBin[17])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[18], Model.InputSubnetSMBin[18])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[19], Model.InputSubnetSMBin[19])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[20], Model.InputSubnetSMBin[20])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[21], Model.InputSubnetSMBin[21])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[22], Model.InputSubnetSMBin[22])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[23], Model.InputSubnetSMBin[23])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[24], Model.InputSubnetSMBin[24])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[25], Model.InputSubnetSMBin[25])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[26], Model.InputSubnetSMBin[26])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[27], Model.InputSubnetSMBin[27])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[28], Model.InputSubnetSMBin[28])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[29], Model.InputSubnetSMBin[29])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[30], Model.InputSubnetSMBin[30])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetSMBin[31], Model.InputSubnetSMBin[31])</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете подмрежовата маска в десетична бройна система:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@SplitIPDec(0, Model.SubnetSMDec)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(1, Model.SubnetSMDec)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(2, Model.SubnetSMDec)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(3, Model.SubnetSMDec)</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(0, Model.SubnetSMDec), SplitIPDec(0, Model.InputSubnetSMDec))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(1, Model.SubnetSMDec), SplitIPDec(1, Model.InputSubnetSMDec))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(2, Model.SubnetSMDec), SplitIPDec(2, Model.InputSubnetSMDec))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(3, Model.SubnetSMDec), SplitIPDec(3, Model.InputSubnetSMDec))</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете мрежовия адрес на подмрежа №1 в двоична бройна система:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@Model.SubnetNABin1[0]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[1]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[2]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[3]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[4]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[5]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[6]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[7]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[8]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[9]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[10]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[11]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[12]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[13]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[14]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[15]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[16]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[17]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[18]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[19]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[20]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[21]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[22]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[23]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[24]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[25]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[26]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[27]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[28]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[29]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[30]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin1[31]</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[0], Model.InputSubnetNABin1[0])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[1], Model.InputSubnetNABin1[1])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[2], Model.InputSubnetNABin1[2])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[3], Model.InputSubnetNABin1[3])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[4], Model.InputSubnetNABin1[4])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[5], Model.InputSubnetNABin1[5])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[6], Model.InputSubnetNABin1[6])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[7], Model.InputSubnetNABin1[7])</div>
+
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[8], Model.InputSubnetNABin1[8])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[9], Model.InputSubnetNABin1[9])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[10], Model.InputSubnetNABin1[10])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[11], Model.InputSubnetNABin1[11])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[12], Model.InputSubnetNABin1[12])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[13], Model.InputSubnetNABin1[13])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[14], Model.InputSubnetNABin1[14])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[15], Model.InputSubnetNABin1[15])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[16], Model.InputSubnetNABin1[16])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[17], Model.InputSubnetNABin1[17])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[18], Model.InputSubnetNABin1[18])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[19], Model.InputSubnetNABin1[19])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[20], Model.InputSubnetNABin1[20])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[21], Model.InputSubnetNABin1[21])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[22], Model.InputSubnetNABin1[22])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[23], Model.InputSubnetNABin1[23])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[24], Model.InputSubnetNABin1[24])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[25], Model.InputSubnetNABin1[25])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[26], Model.InputSubnetNABin1[26])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[27], Model.InputSubnetNABin1[27])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[28], Model.InputSubnetNABin1[28])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[29], Model.InputSubnetNABin1[29])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[30], Model.InputSubnetNABin1[30])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin1[31], Model.InputSubnetNABin1[31])</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете мрежовия адрес на подмрежа №1 в десетична бройна система:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@SplitIPDec(0, Model.SubnetNADec1)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(1, Model.SubnetNADec1)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(2, Model.SubnetNADec1)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(3, Model.SubnetNADec1)</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(0, Model.SubnetNADec1), SplitIPDec(0, Model.InputSubnetNADec1))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(1, Model.SubnetNADec1), SplitIPDec(1, Model.InputSubnetNADec1))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(2, Model.SubnetNADec1), SplitIPDec(2, Model.InputSubnetNADec1))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(3, Model.SubnetNADec1), SplitIPDec(3, Model.InputSubnetNADec1))</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете broadcast адреса на подмрежа №1 в двоична бройна система</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[0]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[1]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[2]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[3]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[4]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[5]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[6]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[7]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[8]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[9]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[10]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[11]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[12]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[13]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[14]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[15]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[16]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[17]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[18]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[19]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[20]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[21]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[22]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[23]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[24]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[25]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[26]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[27]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[28]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[29]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[30]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin1[31]</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[0], Model.InputSubnetBRABin1[0])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[1], Model.InputSubnetBRABin1[1])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[2], Model.InputSubnetBRABin1[2])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[3], Model.InputSubnetBRABin1[3])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[4], Model.InputSubnetBRABin1[4])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[5], Model.InputSubnetBRABin1[5])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[6], Model.InputSubnetBRABin1[6])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[7], Model.InputSubnetBRABin1[7])</div>
+
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[8], Model.InputSubnetBRABin1[8])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[9], Model.InputSubnetBRABin1[9])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[10], Model.InputSubnetBRABin1[10])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[11], Model.InputSubnetBRABin1[11])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[12], Model.InputSubnetBRABin1[12])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[13], Model.InputSubnetBRABin1[13])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[14], Model.InputSubnetBRABin1[14])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[15], Model.InputSubnetBRABin1[15])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[16], Model.InputSubnetBRABin1[16])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[17], Model.InputSubnetBRABin1[17])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[18], Model.InputSubnetBRABin1[18])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[19], Model.InputSubnetBRABin1[19])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[20], Model.InputSubnetBRABin1[20])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[21], Model.InputSubnetBRABin1[21])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[22], Model.InputSubnetBRABin1[22])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[23], Model.InputSubnetBRABin1[23])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[24], Model.InputSubnetBRABin1[24])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[25], Model.InputSubnetBRABin1[25])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[26], Model.InputSubnetBRABin1[26])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[27], Model.InputSubnetBRABin1[27])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[28], Model.InputSubnetBRABin1[28])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[29], Model.InputSubnetBRABin1[29])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[30], Model.InputSubnetBRABin1[30])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin1[31], Model.InputSubnetBRABin1[31])</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете broadcast адреса на подмрежа №1 в десетична бройна система:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@SplitIPDec(0, Model.SubnetBRADec1)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(1, Model.SubnetBRADec1)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(2, Model.SubnetBRADec1)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(3, Model.SubnetBRADec1)</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(0, Model.SubnetBRADec1), SplitIPDec(0, Model.InputSubnetBRADec1))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(1, Model.SubnetBRADec1), SplitIPDec(1, Model.InputSubnetBRADec1))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(2, Model.SubnetBRADec1), SplitIPDec(2, Model.InputSubnetBRADec1))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(3, Model.SubnetBRADec1), SplitIPDec(3, Model.InputSubnetBRADec1))</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете обхвата на подмрежа №1:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>от </div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@SplitIPDec(0, Model.SubnetRange1)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(1, Model.SubnetRange1)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(2, Model.SubnetRange1)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(3, Model.SubnetRange1)</div>
+                </div>
+                <div class="info-text-container">
+                    <div>до </div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@SplitIPDec(4, Model.SubnetRange1)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(5, Model.SubnetRange1)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(6, Model.SubnetRange1)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(7, Model.SubnetRange1)</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>от </div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(0, Model.SubnetRange1), SplitIPDec(0, Model.InputSubnetRange1))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(1, Model.SubnetRange1), SplitIPDec(1, Model.InputSubnetRange1))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(2, Model.SubnetRange1), SplitIPDec(2, Model.InputSubnetRange1))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(3, Model.SubnetRange1), SplitIPDec(3, Model.InputSubnetRange1))</div>
+                </div>
+                <div class="info-text-container">
+                    <div>до </div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(4, Model.SubnetRange1), SplitIPDec(4, Model.InputSubnetRange1))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(5, Model.SubnetRange1), SplitIPDec(5, Model.InputSubnetRange1))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(6, Model.SubnetRange1), SplitIPDec(6, Model.InputSubnetRange1))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(7, Model.SubnetRange1), SplitIPDec(7, Model.InputSubnetRange1))</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете мрежовия адрес на подмрежа №2 в двоична бройна система:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@Model.SubnetNABin2[0]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[1]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[2]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[3]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[4]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[5]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[6]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[7]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[8]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[9]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[10]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[11]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[12]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[13]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[14]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[15]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[16]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[17]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[18]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[19]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[20]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[21]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[22]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[23]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[24]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[25]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[26]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[27]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[28]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[29]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[30]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin2[31]</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[0], Model.InputSubnetNABin2[0])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[1], Model.InputSubnetNABin2[1])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[2], Model.InputSubnetNABin2[2])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[3], Model.InputSubnetNABin2[3])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[4], Model.InputSubnetNABin2[4])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[5], Model.InputSubnetNABin2[5])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[6], Model.InputSubnetNABin2[6])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[7], Model.InputSubnetNABin2[7])</div>
+
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[8], Model.InputSubnetNABin2[8])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[9], Model.InputSubnetNABin2[9])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[10], Model.InputSubnetNABin2[10])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[11], Model.InputSubnetNABin2[11])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[12], Model.InputSubnetNABin2[12])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[13], Model.InputSubnetNABin2[13])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[14], Model.InputSubnetNABin2[14])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[15], Model.InputSubnetNABin2[15])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[16], Model.InputSubnetNABin2[16])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[17], Model.InputSubnetNABin2[17])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[18], Model.InputSubnetNABin2[18])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[19], Model.InputSubnetNABin2[19])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[20], Model.InputSubnetNABin2[20])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[21], Model.InputSubnetNABin2[21])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[22], Model.InputSubnetNABin2[22])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[23], Model.InputSubnetNABin2[23])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[24], Model.InputSubnetNABin2[24])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[25], Model.InputSubnetNABin2[25])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[26], Model.InputSubnetNABin2[26])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[27], Model.InputSubnetNABin2[27])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[28], Model.InputSubnetNABin2[28])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[29], Model.InputSubnetNABin2[29])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[30], Model.InputSubnetNABin2[30])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin2[31], Model.InputSubnetNABin2[31])</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете мрежовия адрес на подмрежа №2 в десетична бройна система:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@SplitIPDec(0, Model.SubnetNADec2)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(1, Model.SubnetNADec2)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(2, Model.SubnetNADec2)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(3, Model.SubnetNADec2)</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(0, Model.SubnetNADec2), SplitIPDec(0, Model.InputSubnetNADec2))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(1, Model.SubnetNADec2), SplitIPDec(1, Model.InputSubnetNADec2))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(2, Model.SubnetNADec2), SplitIPDec(2, Model.InputSubnetNADec2))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(3, Model.SubnetNADec2), SplitIPDec(3, Model.InputSubnetNADec2))</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете broadcast адреса на подмрежа №2 в двоична бройна система:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[0]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[1]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[2]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[3]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[4]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[5]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[6]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[7]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[8]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[9]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[10]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[11]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[12]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[13]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[14]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[15]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[16]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[17]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[18]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[19]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[20]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[21]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[22]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[23]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[24]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[25]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[26]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[27]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[28]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[29]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[30]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin2[31]</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[0], Model.InputSubnetBRABin2[0])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[1], Model.InputSubnetBRABin2[1])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[2], Model.InputSubnetBRABin2[2])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[3], Model.InputSubnetBRABin2[3])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[4], Model.InputSubnetBRABin2[4])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[5], Model.InputSubnetBRABin2[5])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[6], Model.InputSubnetBRABin2[6])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[7], Model.InputSubnetBRABin2[7])</div>
+
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[8], Model.InputSubnetBRABin2[8])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[9], Model.InputSubnetBRABin2[9])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[10], Model.InputSubnetBRABin2[10])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[11], Model.InputSubnetBRABin2[11])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[12], Model.InputSubnetBRABin2[12])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[13], Model.InputSubnetBRABin2[13])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[14], Model.InputSubnetBRABin2[14])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[15], Model.InputSubnetBRABin2[15])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[16], Model.InputSubnetBRABin2[16])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[17], Model.InputSubnetBRABin2[17])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[18], Model.InputSubnetBRABin2[18])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[19], Model.InputSubnetBRABin2[19])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[20], Model.InputSubnetBRABin2[20])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[21], Model.InputSubnetBRABin2[21])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[22], Model.InputSubnetBRABin2[22])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[23], Model.InputSubnetBRABin2[23])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[24], Model.InputSubnetBRABin2[24])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[25], Model.InputSubnetBRABin2[25])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[26], Model.InputSubnetBRABin2[26])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[27], Model.InputSubnetBRABin2[27])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[28], Model.InputSubnetBRABin2[28])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[29], Model.InputSubnetBRABin2[29])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[30], Model.InputSubnetBRABin2[30])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin2[31], Model.InputSubnetBRABin2[31])</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете broadcast адреса на подмрежа №2 в десетична бройна система:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@SplitIPDec(0, Model.SubnetBRADec2)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(1, Model.SubnetBRADec2)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(2, Model.SubnetBRADec2)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(3, Model.SubnetBRADec2)</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(0, Model.SubnetBRADec2), SplitIPDec(0, Model.InputSubnetBRADec2))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(1, Model.SubnetBRADec2), SplitIPDec(1, Model.InputSubnetBRADec2))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(2, Model.SubnetBRADec2), SplitIPDec(2, Model.InputSubnetBRADec2))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(3, Model.SubnetBRADec2), SplitIPDec(3, Model.InputSubnetBRADec2))</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете обхвата на подмрежа №2:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>от </div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@SplitIPDec(0, Model.SubnetRange2)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(1, Model.SubnetRange2)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(2, Model.SubnetRange2)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(3, Model.SubnetRange2)</div>
+                </div>
+                <div class="info-text-container">
+                    <div>до </div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@SplitIPDec(4, Model.SubnetRange2)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(5, Model.SubnetRange2)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(6, Model.SubnetRange2)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(7, Model.SubnetRange2)</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>от </div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(0, Model.SubnetRange2), SplitIPDec(0, Model.InputSubnetRange2))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(1, Model.SubnetRange2), SplitIPDec(1, Model.InputSubnetRange2))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(2, Model.SubnetRange2), SplitIPDec(2, Model.InputSubnetRange2))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(3, Model.SubnetRange2), SplitIPDec(3, Model.InputSubnetRange2))</div>
+                </div>
+                <div class="info-text-container">
+                    <div>до </div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(4, Model.SubnetRange2), SplitIPDec(4, Model.InputSubnetRange2))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(5, Model.SubnetRange2), SplitIPDec(5, Model.InputSubnetRange2))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(6, Model.SubnetRange2), SplitIPDec(6, Model.InputSubnetRange2))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(7, Model.SubnetRange2), SplitIPDec(7, Model.InputSubnetRange2))</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете мрежовия адрес на подмрежа №3 в двоична бройна система:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@Model.SubnetNABin3[0]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[1]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[2]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[3]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[4]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[5]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[6]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[7]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[8]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[9]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[10]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[11]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[12]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[13]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[14]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[15]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[16]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[17]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[18]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[19]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[20]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[21]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[22]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[23]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[24]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[25]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[26]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[27]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[28]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[29]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[30]</div>
+                    <div class="ip-digit-box">@Model.SubnetNABin3[31]</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[0], Model.InputSubnetNABin3[0])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[1], Model.InputSubnetNABin3[1])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[2], Model.InputSubnetNABin3[2])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[3], Model.InputSubnetNABin3[3])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[4], Model.InputSubnetNABin3[4])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[5], Model.InputSubnetNABin3[5])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[6], Model.InputSubnetNABin3[6])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[7], Model.InputSubnetNABin3[7])</div>
+
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[8], Model.InputSubnetNABin3[8])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[9], Model.InputSubnetNABin3[9])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[10], Model.InputSubnetNABin3[10])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[11], Model.InputSubnetNABin3[11])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[12], Model.InputSubnetNABin3[12])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[13], Model.InputSubnetNABin3[13])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[14], Model.InputSubnetNABin3[14])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[15], Model.InputSubnetNABin3[15])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[16], Model.InputSubnetNABin3[16])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[17], Model.InputSubnetNABin3[17])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[18], Model.InputSubnetNABin3[18])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[19], Model.InputSubnetNABin3[19])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[20], Model.InputSubnetNABin3[20])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[21], Model.InputSubnetNABin3[21])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[22], Model.InputSubnetNABin3[22])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[23], Model.InputSubnetNABin3[23])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[24], Model.InputSubnetNABin3[24])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[25], Model.InputSubnetNABin3[25])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[26], Model.InputSubnetNABin3[26])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[27], Model.InputSubnetNABin3[27])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[28], Model.InputSubnetNABin3[28])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[29], Model.InputSubnetNABin3[29])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[30], Model.InputSubnetNABin3[30])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetNABin3[31], Model.InputSubnetNABin3[31])</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете мрежовия адрес на подмрежа №3 в десетична бройна система:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@SplitIPDec(0, Model.SubnetNADec3)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(1, Model.SubnetNADec3)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(2, Model.SubnetNADec3)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(3, Model.SubnetNADec3)</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(0, Model.SubnetNADec3), SplitIPDec(0, Model.InputSubnetNADec3))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(1, Model.SubnetNADec3), SplitIPDec(1, Model.InputSubnetNADec3))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(2, Model.SubnetNADec3), SplitIPDec(2, Model.InputSubnetNADec3))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(3, Model.SubnetNADec3), SplitIPDec(3, Model.InputSubnetNADec3))</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете broadcast адреса на подмрежа №3 в двоична бройна система:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[0]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[1]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[2]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[3]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[4]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[5]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[6]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[7]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[8]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[9]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[10]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[11]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[12]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[13]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[14]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[15]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[16]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[17]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[18]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[19]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[20]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[21]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[22]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[23]</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[24]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[25]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[26]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[27]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[28]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[29]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[30]</div>
+                    <div class="ip-digit-box">@Model.SubnetBRABin3[31]</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[0], Model.InputSubnetBRABin3[0])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[1], Model.InputSubnetBRABin3[1])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[2], Model.InputSubnetBRABin3[2])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[3], Model.InputSubnetBRABin3[3])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[4], Model.InputSubnetBRABin3[4])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[5], Model.InputSubnetBRABin3[5])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[6], Model.InputSubnetBRABin3[6])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[7], Model.InputSubnetBRABin3[7])</div>
+
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[8], Model.InputSubnetBRABin3[8])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[9], Model.InputSubnetBRABin3[9])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[10], Model.InputSubnetBRABin3[10])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[11], Model.InputSubnetBRABin3[11])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[12], Model.InputSubnetBRABin3[12])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[13], Model.InputSubnetBRABin3[13])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[14], Model.InputSubnetBRABin3[14])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[15], Model.InputSubnetBRABin3[15])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[16], Model.InputSubnetBRABin3[16])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[17], Model.InputSubnetBRABin3[17])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[18], Model.InputSubnetBRABin3[18])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[19], Model.InputSubnetBRABin3[19])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[20], Model.InputSubnetBRABin3[20])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[21], Model.InputSubnetBRABin3[21])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[22], Model.InputSubnetBRABin3[22])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[23], Model.InputSubnetBRABin3[23])</div>
+                    <div class="ip-dot">.</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[24], Model.InputSubnetBRABin3[24])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[25], Model.InputSubnetBRABin3[25])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[26], Model.InputSubnetBRABin3[26])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[27], Model.InputSubnetBRABin3[27])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[28], Model.InputSubnetBRABin3[28])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[29], Model.InputSubnetBRABin3[29])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[30], Model.InputSubnetBRABin3[30])</div>
+                    <div class="ip-digit-box">@CheckMistakesBin(Model.SubnetBRABin3[31], Model.InputSubnetBRABin3[31])</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете broadcast адреса на подмрежа №3 в десетична бройна система:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@SplitIPDec(0, Model.SubnetBRADec3)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(1, Model.SubnetBRADec3)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(2, Model.SubnetBRADec3)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(3, Model.SubnetBRADec3)</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(0, Model.SubnetBRADec3), SplitIPDec(0, Model.InputSubnetBRADec3))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(1, Model.SubnetBRADec3), SplitIPDec(1, Model.InputSubnetBRADec3))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(2, Model.SubnetBRADec3), SplitIPDec(2, Model.InputSubnetBRADec3))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(3, Model.SubnetBRADec3), SplitIPDec(3, Model.InputSubnetBRADec3))</div>
+                </div>
+            </div>
+        </div>
+        <div class="info-container">
+            <div class="info-subContainer">
+                <div class="main-info-text-container">
+                    <div>Запишете обхвата на подмрежа №3:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Правилен отговор:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>от </div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@SplitIPDec(0, Model.SubnetRange3)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(1, Model.SubnetRange3)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(2, Model.SubnetRange3)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(3, Model.SubnetRange3)</div>
+                </div>
+                <div class="info-text-container">
+                    <div>до </div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@SplitIPDec(4, Model.SubnetRange3)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(5, Model.SubnetRange3)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(6, Model.SubnetRange3)</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@SplitIPDec(7, Model.SubnetRange3)</div>
+                </div>
+                <div class="info-text-container">
+                    <div>Твоят отговор:</div>
+                </div>
+                <div class="info-text-container">
+                    <div>от </div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(0, Model.SubnetRange3), SplitIPDec(0, Model.InputSubnetRange3))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(1, Model.SubnetRange3), SplitIPDec(1, Model.InputSubnetRange3))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(2, Model.SubnetRange3), SplitIPDec(2, Model.InputSubnetRange3))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(3, Model.SubnetRange3), SplitIPDec(3, Model.InputSubnetRange3))</div>
+                </div>
+                <div class="info-text-container">
+                    <div>до </div>
+                </div>
+                <div class="ip-div-container">
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(4, Model.SubnetRange3), SplitIPDec(4, Model.InputSubnetRange3))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(5, Model.SubnetRange3), SplitIPDec(5, Model.InputSubnetRange3))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(6, Model.SubnetRange3), SplitIPDec(6, Model.InputSubnetRange3))</div>
+                    <div class="ip-dot">.</div>
+                    <div class="mini-div-box">@CheckMistakesDec(SplitIPDec(7, Model.SubnetRange3), SplitIPDec(7, Model.InputSubnetRange3))</div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
