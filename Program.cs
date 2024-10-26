@@ -6,7 +6,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<IPTestFormASPDbContext>(c => c.UseMySQL("Server=mysql-210770ab-techstore.b.aivencloud.com;Database=iptests;Uid=avnadmin;Pwd=AVNS_ECNjUML_9rCSuGwr_PA;Port=15039"));
+
+builder.Configuration.AddJsonFile(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "GitSecrets.json"), optional: true);
+string? connectionString = builder.Configuration.GetConnectionString("IPCalculator") ?? builder.Configuration.GetConnectionString("DefaultConnection")!;
+
+builder.Services.AddDbContext<IPTestFormASPDbContext>(options => options.UseMySQL(connectionString));
+
 builder.Services.AddScoped<IPService>();
 
 var app = builder.Build();
